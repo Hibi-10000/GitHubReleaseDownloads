@@ -5,5 +5,4 @@ Tampermonkeyを使用していればReleaseにあるGithubReleaseDownloads.user.
 一部に[addshore/browser-github-release-downloads](https://github.com/addshore/browser-github-release-downloads)(MIT License)のコードを使用しています  
 
 ### Preview
-<img width="679" alt="image" src="https://github.com/Hibi-10000/GithubReleaseDownloads/assets/87810571/a66b34d6-c77c-4c6d-b5ea-44ec7fc56e4f">
-
+<img width="673" alt="image" src="https://github.com/Hibi-10000/GithubReleaseDownloads/assets/87810571/0917d82c-06c9-421d-b570-fd08516d0767">
