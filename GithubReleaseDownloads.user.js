@@ -1,20 +1,24 @@
 // ==UserScript==
 // @name         Github Release Downloads
+// @namespace    https://github.com/Hibi-10000/GithubReleaseDownloads
 // @version      0.1.0
+// @author       Hibi_10000
+// @license      MIT
 // @description  Show download count for releases on Github
+// @source       https://github.com/Hibi-10000/GithubReleaseDownloads
 // @icon         https://github.githubassets.com/favicons/favicon-dark.png
 // @grant        none
-// @author       Hibi_10000
-// @source       https://github.com/Hibi-10000/GithubReleaseDownloads
-// @match        github.com/*
+// @match        https://github.com/*
 // @updateURL    https://github.com/Hibi-10000/GithubReleaseDownloads/releases/latest/download/GithubReleaseDownloads.user.js
 // @downloadURL  https://github.com/Hibi-10000/GithubReleaseDownloads/releases/latest/download/GithubReleaseDownloads.user.js
 // ==/UserScript==
 
+'use strict';
+
 let observer = new MutationObserver(observerFunc)
 const setObs = () => {
     const body = document.querySelector("body");
-    if(body) {
+    if (body != null) {
         observer.observe(body, {childList: true, subtree: true});
     }
     else {
@@ -109,9 +113,6 @@ function run() {
 }
 
 (function() {
-    'use strict';
-
     setStyle();
     setObs();
-
 })();
