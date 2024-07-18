@@ -49,78 +49,86 @@ div.Box > div.Box-footer > div.mb-3 > details > div > div > ul > li > div > span
 }
 
 const getRepo = () => {
+    //return document.querySelector('meta[name="octolytics-dimension-repository_nwo"]').content;
     return document.URL.match(/(?<=^https?:\/\/github.com\/).+?\/.+?(?=\/releases)/)[0];
 }
 
-//大部分がaddshore/browser-github-release-downloads(MIT License)のコード
-function run() {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function () {
-        switch (xmlHttp.readyState) {
-            case 0: // UNINITIALIZED
-            case 1: // LOADING
-            case 2: // LOADED
-            case 3: // INTERACTIVE
-                break;
-            case 4: // COMPLETED
-                var releases = JSON.parse(xmlHttp.responseText);
-                var downloadMap = [];
-                for (var i in releases) {
-                    for (var j in releases[i].assets) {
-                        // browser_download_url is a full URL to the resource
-                        downloadMap[decodeURI(releases[i].assets[j].browser_download_url)] = releases[i].assets[j].download_count;
-                    }
-                }
-                var els = document.querySelectorAll(`a[href^="/${getRepo()}/releases/download/"]`);
-                //var locale = getLocale();
-                for (var ii = 0, l = els.length; ii < l; ii++) {
-                    var el = els[ii];
-                    if (el.href in downloadMap) {
-                        var sizeContainer = el.parentNode.parentNode.children[1];
-                        if (!sizeContainer) {
-                            console.log("No size parent element selectable to attached download count to");
-                            continue;
-                        }
-                        //そこにgrdcounterがあるかどうか確認する
-                        const grdcounter = sizeContainer.querySelector('.grdcounter');
-                        if (grdcounter != null) continue;
+const getReleaseTag = () => {
+    const ifEmpty = document.URL.replace(/^https?:\/\/github.com\/.+?\/.+?\/releases/, "");
+    return ifEmpty === "" ? null : ifEmpty.match(/(?<=^\/tag\/)[^/?#]+/)[0];
+}
 
-                        var size = sizeContainer.children[0];
-                        if (!size) {
-                            console.log("No size element selectable to attached download count to");
-                            continue;
-                        }
-                        var dwnCount = document.createElement('span');
-                        //dwnCount.id = 'grdcounter'
-                        dwnCount.className = 'grdcounter color-fg-muted text-sm-right ml-md-3'; // Right style
-                        //dwnCount.classList.remove('flex-auto');
-                        //size.classList.remove('flex-auto');
-                        var d = downloadMap[el.href];
-                        //if (locale.length) {
-                        //  d = d.toLocaleString("en-US");
-                        //}
-                        dwnCount.appendChild(document.createTextNode(d + ' Downloads'));
-                        //var dwnIcon = document.createElement('span');
-                        //dwnCount.appendChild(dwnIcon);
-                        sizeContainer.insertBefore(dwnCount, size);
-                        //size.style.setProperty('flex', 'none', 'important');
-                        //dwnCount.style.setProperty('flex', 'none', 'important');
-                        //dwnCount.style.flexGrow = '2';
-                        //dwnCount.style.minWidth = dwnCount.offsetWidth + 3 + 'px';
-                        //dwnCount.style.marginLeft = '5px';
-                        dwnCount.style.whiteSpace = 'nowrap';
-                        //size.classList.remove('text-sm-left');
-                        //size.classList.add('text-sm-right');
-                        size.classList.remove('flex-auto');
-                    }
-                }
-                break;
-            default:
-                console.log('Error: GitHub Release Download Count Request Errored.');
+function run() {
+    const tag = getReleaseTag();
+    const response = fetch(`https://api.github.com/repos/${getRepo()}/releases${tag !== null ? `/tags/${tag}` : ""}`);
+    response.then(res => {
+        if (res.ok) {
+            res.json().then(json => {
+                setDLCount(json, tag !== null);
+            });
         }
-    };
-    xmlHttp.open('GET', document.URL.replace('//github.com', '//api.github.com/repos').split('/tag/')[0], true);
-    xmlHttp.send(null);
+    }).catch(error => {
+        console.error('Error:', error);
+    });;
+}
+
+function setDLCount(json, /** @type {boolean} */ isTag) {
+    document.querySelectorAll(`a[href^="/${getRepo()}/releases/download/"]`).forEach(link => {
+        const name = link.href.match(/(?<=\/)[^/?#]+$/)[0];
+        const assets = tag => {
+            return createElement(tag.assets, name, link);
+        }
+        if (isTag) {
+            assets(json);
+        } else {
+            for (const tag of json) {
+                if (assets(tag)) break;
+            }
+        }
+    });
+}
+
+//大部分がaddshore/browser-github-release-downloads(MIT License)のコード
+function createElement(assets, name, link) {
+    for (const asset of assets) {
+        if (asset.name === name) {
+            var sizeContainer = link.parentNode.parentNode.children[1];
+            if (!sizeContainer) {
+                console.log("No size parent element selectable to attached download count to");
+                continue;
+            }
+            //そこにgrdcounterがあるかどうか確認する
+            const grdcounter = sizeContainer.querySelector('.grdcounter');
+            if (grdcounter != null) continue;
+
+            var size = sizeContainer.children[0];
+            if (!size) {
+                console.log("No size element selectable to attached download count to");
+                continue;
+            }
+            var dwnCount = document.createElement('span');
+            //dwnCount.id = 'grdcounter'
+            dwnCount.className = 'grdcounter color-fg-muted text-sm-right ml-md-3'; // Right style
+            //dwnCount.classList.remove('flex-auto');
+            //size.classList.remove('flex-auto');
+            var d = asset.download_count;
+            dwnCount.appendChild(document.createTextNode(d + ' Downloads'));
+            //var dwnIcon = document.createElement('span');
+            //dwnCount.appendChild(dwnIcon);
+            sizeContainer.insertBefore(dwnCount, size);
+            //size.style.setProperty('flex', 'none', 'important');
+            //dwnCount.style.setProperty('flex', 'none', 'important');
+            //dwnCount.style.flexGrow = '2';
+            //dwnCount.style.minWidth = dwnCount.offsetWidth + 3 + 'px';
+            //dwnCount.style.marginLeft = '5px';
+            dwnCount.style.whiteSpace = 'nowrap';
+            //size.classList.remove('text-sm-left');
+            //size.classList.add('text-sm-right');
+            size.classList.remove('flex-auto');
+            return true;
+        }
+    }
+    return false;
 }
 
 (function() {
