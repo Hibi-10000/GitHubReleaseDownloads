@@ -84,15 +84,10 @@ function createElement(assets, name, /** @type {Element} */ link) {
             assetDownloads.id = 'grdcounter';
             assetDownloads.className = 'color-fg-muted text-sm-right ml-md-3';
             assetDownloads.textContent = `${asset.download_count} Downloads`;
+            assetDownloads.style.whiteSpace = 'nowrap';
 
             const fileSize = assetDataElem.firstChild;
             assetDataElem.insertBefore(assetDownloads, fileSize);
-            //fileSize.style.setProperty('flex', 'none', 'important');
-            //assetDownloads.classList.remove('flex-auto');
-            //assetDownloads.style.setProperty('flex', 'none', 'important');
-            assetDownloads.style.whiteSpace = 'nowrap';
-            //fileSize.classList.remove('text-sm-left');
-            //fileSize.classList.add('text-sm-right');
             fileSize.classList.remove('flex-auto');
             return true;
         }
