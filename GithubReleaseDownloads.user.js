@@ -27,7 +27,9 @@ const setObs = () => {
 }
 
 function observerFunc() {
-    if (new RegExp('https?://github.com/[^/_]*/[^/]*/releases.*').test(document.URL)) run();
+    if (/https?:\/\/github.com\/.+?\/.+?\/releases.*/.test(document.URL)) {
+        run();
+    }
 }
 
 const setStyle = () => {
@@ -47,7 +49,7 @@ div.Box > div.Box-footer > div.mb-3 > details > div > div > ul > li > div > span
 }
 
 const getRepo = () => {
-    return document.URL.match(new RegExp('(?<=https?://github.com/).+?/.+?(?=/)'))[0];
+    return document.URL.match(/(?<=^https?:\/\/github.com\/).+?\/.+?(?=\/releases)/)[0];
 }
 
 //大部分がaddshore/browser-github-release-downloads(MIT License)のコード
