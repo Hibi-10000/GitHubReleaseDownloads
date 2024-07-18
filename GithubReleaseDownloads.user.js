@@ -32,22 +32,6 @@ function observerFunc() {
     }
 }
 
-const setStyle = () => {
-    if (document.querySelector('#grdstyle')) return;
-    const style = document.createElement('style');
-    const css = `
-div.Box > div.Box-footer > div.mb-3 > details > div > div > ul > li > div > span.flex-auto {
-    /*flex: none !important;*/
-}
-.Box .Box-footer .mb-3 details include-fragment ul > li > div:nth-child(2) {
-    /*width: 50%;*/
-}
-`;
-    style.textContent = css;
-    style.id = 'grdstyle';
-    document.querySelector('head').appendChild(style);
-}
-
 const getRepo = () => {
     //return document.querySelector('meta[name="octolytics-dimension-repository_nwo"]').content;
     return document.URL.match(/(?<=^https?:\/\/github.com\/).+?\/.+?(?=\/releases)/)[0];
@@ -132,6 +116,5 @@ function createElement(assets, name, link) {
 }
 
 (function() {
-    //setStyle();
     setObs();
 })();
