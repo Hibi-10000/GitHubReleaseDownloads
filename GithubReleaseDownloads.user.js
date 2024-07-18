@@ -41,9 +41,7 @@ div.Box > div.Box-footer > div.mb-3 > details > div > div > ul > li > div > span
     /*width: 50%;*/
 }
 `;
-    const textnode = document.createTextNode(css);
-    style.appendChild(textnode);
-    style.type = 'text/css'
+    style.textContent = css;
     style.id = 'grdstyle';
     document.querySelector('head').appendChild(style);
 }
