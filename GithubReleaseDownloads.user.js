@@ -48,6 +48,10 @@ div.Box > div.Box-footer > div.mb-3 > details > div > div > ul > li > div > span
     document.querySelector('head').appendChild(style);
 }
 
+const getRepo = () => {
+    return document.URL.match(new RegExp('(?<=https?://github.com/).+?/.+?(?=/)'))[0];
+}
+
 //大部分がaddshore/browser-github-release-downloads(MIT License)のコード
 function run() {
     var xmlHttp = new XMLHttpRequest();
@@ -67,7 +71,7 @@ function run() {
                         downloadMap[decodeURI(releases[i].assets[j].browser_download_url)] = releases[i].assets[j].download_count;
                     }
                 }
-                var els = document.getElementsByTagName('a');
+                var els = document.querySelectorAll(`a[href^="/${getRepo()}/releases/download/"]`);
                 //var locale = getLocale();
                 for (var ii = 0, l = els.length; ii < l; ii++) {
                     var el = els[ii];
