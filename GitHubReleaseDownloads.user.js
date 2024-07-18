@@ -65,8 +65,9 @@ function setDLCount(json, /** @type {boolean} */ isTag) {
         if (isTag) {
             assets(json);
         } else {
+            const tagName = link.href.match(/(?<=\/download\/)[^/?#]+(?=\/[^/?#]+$)/)[0];
             for (const tag of json) {
-                if (assets(tag)) break;
+                if (tag.tag_name === tagName && assets(tag)) break;
             }
         }
     });
