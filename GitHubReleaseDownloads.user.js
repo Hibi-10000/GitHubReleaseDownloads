@@ -1,16 +1,16 @@
 // ==UserScript==
-// @name         Github Release Downloads
-// @namespace    https://github.com/Hibi-10000/GithubReleaseDownloads
+// @name         GitHub Release Downloads
+// @namespace    https://github.com/Hibi-10000/GitHubReleaseDownloads
 // @version      0.1.0
 // @author       Hibi_10000
 // @license      MIT
 // @description  Show download count for releases on Github
-// @source       https://github.com/Hibi-10000/GithubReleaseDownloads
+// @source       https://github.com/Hibi-10000/GitHubReleaseDownloads
 // @icon         https://github.githubassets.com/favicons/favicon-dark.png
 // @grant        none
 // @match        https://github.com/*
-// @updateURL    https://github.com/Hibi-10000/GithubReleaseDownloads/releases/latest/download/GithubReleaseDownloads.user.js
-// @downloadURL  https://github.com/Hibi-10000/GithubReleaseDownloads/releases/latest/download/GithubReleaseDownloads.user.js
+// @updateURL    https://github.com/Hibi-10000/GitHubReleaseDownloads/releases/latest/download/GitHubReleaseDownloads.user.js
+// @downloadURL  https://github.com/Hibi-10000/GitHubReleaseDownloads/releases/latest/download/GitHubReleaseDownloads.user.js
 // ==/UserScript==
 
 'use strict';
