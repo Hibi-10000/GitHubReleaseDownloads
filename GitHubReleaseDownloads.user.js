@@ -76,6 +76,7 @@ function createElement(assets, name, /** @type {Element} */ link) {
     for (const asset of assets) {
         if (asset.name === name) {
             const assetDataElem = link.parentNode.parentNode.children[1];
+            if (assetDataElem == null) continue;
 
             //そこにgrdcounterが既に存在するか確認する
             if (assetDataElem.querySelector('#grdcounter') != null) continue;
@@ -87,6 +88,7 @@ function createElement(assets, name, /** @type {Element} */ link) {
             assetDownloads.style.whiteSpace = 'nowrap';
 
             const fileSize = assetDataElem.firstChild;
+            if (fileSize == null) continue;
             assetDataElem.insertBefore(assetDownloads, fileSize);
             fileSize.classList.remove('flex-auto');
             return true;
