@@ -72,43 +72,28 @@ function setDLCount(json, /** @type {boolean} */ isTag) {
     });
 }
 
-//大部分がaddshore/browser-github-release-downloads(MIT License)のコード
-function createElement(assets, name, link) {
+function createElement(assets, name, /** @type {Element} */ link) {
     for (const asset of assets) {
         if (asset.name === name) {
-            var sizeContainer = link.parentNode.parentNode.children[1];
-            if (!sizeContainer) {
-                console.log("No size parent element selectable to attached download count to");
-                continue;
-            }
-            //そこにgrdcounterがあるかどうか確認する
-            const grdcounter = sizeContainer.querySelector('.grdcounter');
-            if (grdcounter != null) continue;
+            const assetDataElem = link.parentNode.parentNode.children[1];
 
-            var size = sizeContainer.children[0];
-            if (!size) {
-                console.log("No size element selectable to attached download count to");
-                continue;
-            }
-            var dwnCount = document.createElement('span');
-            //dwnCount.id = 'grdcounter'
-            dwnCount.className = 'grdcounter color-fg-muted text-sm-right ml-md-3'; // Right style
-            //dwnCount.classList.remove('flex-auto');
-            //size.classList.remove('flex-auto');
-            var d = asset.download_count;
-            dwnCount.appendChild(document.createTextNode(d + ' Downloads'));
-            //var dwnIcon = document.createElement('span');
-            //dwnCount.appendChild(dwnIcon);
-            sizeContainer.insertBefore(dwnCount, size);
-            //size.style.setProperty('flex', 'none', 'important');
-            //dwnCount.style.setProperty('flex', 'none', 'important');
-            //dwnCount.style.flexGrow = '2';
-            //dwnCount.style.minWidth = dwnCount.offsetWidth + 3 + 'px';
-            //dwnCount.style.marginLeft = '5px';
-            dwnCount.style.whiteSpace = 'nowrap';
-            //size.classList.remove('text-sm-left');
-            //size.classList.add('text-sm-right');
-            size.classList.remove('flex-auto');
+            //そこにgrdcounterが既に存在するか確認する
+            if (assetDataElem.querySelector('#grdcounter') != null) continue;
+
+            const assetDownloads = document.createElement('span');
+            assetDownloads.id = 'grdcounter';
+            assetDownloads.className = 'color-fg-muted text-sm-right ml-md-3';
+            assetDownloads.textContent = `${asset.download_count} Downloads`;
+
+            const fileSize = assetDataElem.firstChild;
+            assetDataElem.insertBefore(assetDownloads, fileSize);
+            //fileSize.style.setProperty('flex', 'none', 'important');
+            //assetDownloads.classList.remove('flex-auto');
+            //assetDownloads.style.setProperty('flex', 'none', 'important');
+            assetDownloads.style.whiteSpace = 'nowrap';
+            //fileSize.classList.remove('text-sm-left');
+            //fileSize.classList.add('text-sm-right');
+            fileSize.classList.remove('flex-auto');
             return true;
         }
     }
