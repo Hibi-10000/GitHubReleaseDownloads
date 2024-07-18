@@ -35,7 +35,10 @@ const setStyle = () => {
     const style = document.createElement('style');
     const css = `
 div.Box > div.Box-footer > div.mb-3 > details > div > div > ul > li > div > span.flex-auto {
-  flex: none !important;
+    /*flex: none !important;*/
+}
+.Box .Box-footer .mb-3 details include-fragment ul > li > div:nth-child(2) {
+    /*width: 50%;*/
 }
 `;
     const textnode = document.createTextNode(css);
@@ -85,7 +88,7 @@ function run() {
                         }
                         var dwnCount = document.createElement('span');
                         //dwnCount.id = 'grdcounter'
-                        dwnCount.className = 'grdcounter color-fg-muted text-sm-right flex-auto'; // Right style
+                        dwnCount.className = 'grdcounter color-fg-muted text-sm-right ml-md-3'; // Right style
                         //dwnCount.classList.remove('flex-auto');
                         //size.classList.remove('flex-auto');
                         var d = downloadMap[el.href];
@@ -98,9 +101,13 @@ function run() {
                         sizeContainer.insertBefore(dwnCount, size);
                         //size.style.setProperty('flex', 'none', 'important');
                         //dwnCount.style.setProperty('flex', 'none', 'important');
-                        dwnCount.style.minWidth = dwnCount.offsetWidth + 3 + 'px';
                         //dwnCount.style.flexGrow = '2';
-                        dwnCount.style.marginLeft = '5px';
+                        //dwnCount.style.minWidth = dwnCount.offsetWidth + 3 + 'px';
+                        //dwnCount.style.marginLeft = '5px';
+                        dwnCount.style.whiteSpace = 'nowrap';
+                        //size.classList.remove('text-sm-left');
+                        //size.classList.add('text-sm-right');
+                        size.classList.remove('flex-auto');
                     }
                 }
                 break;
@@ -113,6 +120,6 @@ function run() {
 }
 
 (function() {
-    setStyle();
+    //setStyle();
     setObs();
 })();
