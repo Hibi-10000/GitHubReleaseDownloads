@@ -42,21 +42,29 @@ const getReleaseTag = () => {
 }
 
 function run() {
-    const tag = getReleaseTag();
-    const response = fetch(`https://api.github.com/repos/${getRepo()}/releases${tag !== null ? `/tags/${tag}` : ""}`);
-    response.then(res => {
-        if (res.ok) {
-            res.json().then(json => {
-                setDLCount(json, tag !== null);
-            });
+    const links = document.querySelectorAll(`a[href^="/${getRepo()}/releases/download/"]`);
+    for (const link of links) {
+        const assetDataElem = link.parentNode.parentNode.children[1];
+        if (assetDataElem == null) continue;
+        //grdcounterがない場所が存在するか確認する
+        if (assetDataElem.querySelector('#grdcounter') == null) {
+            const tag = getReleaseTag();
+            const response = fetch(`https://api.github.com/repos/${getRepo()}/releases${tag !== null ? `/tags/${tag}` : ""}`);
+            response.then(res => {
+                if (res.ok) {
+                    res.json().then(json => {
+                        setDLCount(links, json, tag !== null);
+                    });
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });;
         }
-    }).catch(error => {
-        console.error('Error:', error);
-    });;
+    }
 }
 
-function setDLCount(json, /** @type {boolean} */ isTag) {
-    document.querySelectorAll(`a[href^="/${getRepo()}/releases/download/"]`).forEach(link => {
+function setDLCount(/** @type {NodeListOf<HTMLAnchorElement>} */ links, json, /** @type {boolean} */ isTag) {
+    for (const link of links) {
         const name = link.href.match(/(?<=\/)[^/?#]+$/)[0];
         const assets = tag => {
             return createElement(tag.assets, name, link);
@@ -69,7 +77,7 @@ function setDLCount(json, /** @type {boolean} */ isTag) {
                 if (tag.tag_name === tagName && assets(tag)) break;
             }
         }
-    });
+    }
 }
 
 function createElement(assets, name, /** @type {Element} */ link) {
@@ -78,7 +86,7 @@ function createElement(assets, name, /** @type {Element} */ link) {
             const assetDataElem = link.parentNode.parentNode.children[1];
             if (assetDataElem == null) continue;
 
-            //そこにgrdcounterが既に存在するか確認する
+            //grdcounterが既に存在するか確認する
             if (assetDataElem.querySelector('#grdcounter') != null) continue;
 
             const assetDownloads = document.createElement('span');
