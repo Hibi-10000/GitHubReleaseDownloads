@@ -88,7 +88,7 @@ function createElement(assets, name, /** @type {Element} */ link) {
             assetDownloads.textContent = `${asset.download_count} Downloads`;
             assetDownloads.style.whiteSpace = 'nowrap';
 
-            const fileSize = assetDataElem.firstChild;
+            const fileSize = assetDataElem.firstElementChild;
             if (fileSize == null) continue;
             assetDataElem.insertBefore(assetDownloads, fileSize);
             fileSize.classList.remove('flex-auto');
