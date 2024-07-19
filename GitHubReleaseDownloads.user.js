@@ -15,14 +15,13 @@
 
 'use strict';
 
-let observer = new MutationObserver(observerFunc)
-const setObs = () => {
+const observer = new MutationObserver(observerFunc)
+const initObserver = () => {
     const body = document.querySelector("body");
     if (body != null) {
         observer.observe(body, {childList: true, subtree: true});
-    }
-    else {
-        window.setTimeout(setObs, 1000);
+    } else {
+        window.setTimeout(initObserver, 1000);
     }
 }
 
@@ -99,5 +98,5 @@ function createElement(assets, name, /** @type {Element} */ link) {
 }
 
 (function() {
-    setObs();
+    initObserver();
 })();
