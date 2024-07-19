@@ -41,19 +41,28 @@ const getReleaseTag = () => {
     return ifEmpty === "" ? null : ifEmpty.match(/(?<=^\/tag\/)[^/?#]+/)[0];
 }
 
-function run() {
+let isRunning = false;
+
+const getLinks = () => {
+    /** @type {NodeListOf<HTMLAnchorElement>} */
     const links = document.querySelectorAll(`a[href^="/${getRepo()}/releases/download/"]`);
-    for (const link of links) {
+    return links;
+}
+
+function run() {
+    for (const link of getLinks()) {
         const assetDataElem = link.parentNode.parentNode.children[1];
         if (assetDataElem == null) continue;
         //grdcounterがない場所が存在するか確認する
-        if (assetDataElem.querySelector('#grdcounter') == null) {
+        if (assetDataElem.querySelector('#grdcounter') == null && !isRunning) {
+            isRunning = true;
             const tag = getReleaseTag();
             const response = fetch(`https://api.github.com/repos/${getRepo()}/releases${tag !== null ? `/tags/${tag}` : ""}`);
             response.then(res => {
                 if (res.ok) {
                     res.json().then(json => {
-                        setDLCount(links, json, tag !== null);
+                        isRunning = false;
+                        setDLCount(json, tag !== null);
                     });
                 }
             }).catch(error => {
@@ -63,8 +72,8 @@ function run() {
     }
 }
 
-function setDLCount(/** @type {NodeListOf<HTMLAnchorElement>} */ links, json, /** @type {boolean} */ isTag) {
-    for (const link of links) {
+function setDLCount(json, /** @type {boolean} */ isTag) {
+    for (const link of getLinks()) {
         const name = link.href.match(/(?<=\/)[^/?#]+$/)[0];
         const assets = tag => {
             return createElement(tag.assets, name, link);
