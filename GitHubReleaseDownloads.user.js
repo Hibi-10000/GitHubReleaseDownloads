@@ -7,7 +7,8 @@
 // @description  Show download count for releases on Github
 // @source       https://github.com/Hibi-10000/GitHubReleaseDownloads
 // @icon         https://github.githubassets.com/favicons/favicon-dark.png
-// @grant        none
+// @grant        GM_getValue
+// @grant        GM_setValue
 // @match        https://github.com/*
 // @updateURL    https://github.com/Hibi-10000/GitHubReleaseDownloads/releases/latest/download/GitHubReleaseDownloads.user.js
 // @downloadURL  https://github.com/Hibi-10000/GitHubReleaseDownloads/releases/latest/download/GitHubReleaseDownloads.user.js
@@ -41,13 +42,28 @@ const getReleaseTag = () => {
     return ifEmpty === "" ? null : ifEmpty.match(/(?<=^\/tag\/)[^/?#]+/)[0];
 }
 
-let isRunning = false;
+const getHeader = () => {
+    const PAT = GM_getValue("GITHUB_PAT");
+    if (PAT == undefined || PAT == "") {
+        return null;
+    } else {
+        const userAgent = navigator.userAgent;
+        return {
+            headers: {
+                'User-Agent': userAgent,
+                'Authorization': `Bearer ${PAT}`,
+            }
+        };
+    }
+}
 
 const getLinks = () => {
     /** @type {NodeListOf<HTMLAnchorElement>} */
     const links = document.querySelectorAll(`a[href^="/${getRepo()}/releases/download/"]`);
     return links;
 }
+
+let isRunning = false;
 
 function run() {
     for (const link of getLinks()) {
@@ -57,7 +73,7 @@ function run() {
         if (assetDataElem.querySelector('#grdcounter') == null && !isRunning) {
             isRunning = true;
             const tag = getReleaseTag();
-            const response = fetch(`https://api.github.com/repos/${getRepo()}/releases${tag !== null ? `/tags/${tag}` : ""}`);
+            const response = fetch(`https://api.github.com/repos/${getRepo()}/releases${tag !== null ? `/tags/${tag}` : ""}`, getHeader());
             response.then(res => {
                 if (res.ok) {
                     res.json().then(json => {
@@ -114,6 +130,11 @@ function createElement(assets, name, /** @type {Element} */ link) {
     return false;
 }
 
+function initPAT() {
+    if (GM_getValue("GITHUB_PAT") == undefined) GM_setValue("GITHUB_PAT", "");
+}
+
 (function() {
+    initPAT();
     initObserver();
 })();
