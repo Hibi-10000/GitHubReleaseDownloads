@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GitHub Release Downloads
 // @namespace    https://github.com/Hibi-10000/GitHubReleaseDownloads
-// @version      1.0.0
+// @version      1.0.1
 // @author       Hibi_10000
 // @license      MIT
 // @description  Show download count for releases on Github
