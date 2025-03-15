@@ -39,7 +39,7 @@ const getRepo = () => {
 
 const getReleaseTag = () => {
     const ifEmpty = document.URL.replace(/^https?:\/\/github.com\/.+?\/.+?\/releases/, "");
-    return ifEmpty === "" ? null : ifEmpty.match(/(?<=^\/tag\/)[^/?#]+/)[0];
+    return ifEmpty === "" || ifEmpty === "/" || ifEmpty.startsWith("?") ? null : ifEmpty.match(/(?<=^\/tag\/)[^/?#]+/)[0];
 }
 
 const getHeader = () => {
